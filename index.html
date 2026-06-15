@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tournament Registration</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Orbitron", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #0b0f1a, #000);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 1100px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* LEFT */
+.left {
+  padding: 30px;
+}
+
+.banner {
+  background: linear-gradient(90deg, #ffd700, #ff7b00);
+  padding: 20px;
+  border-radius: 12px;
+  color: black;
+  font-weight: 800;
+  box-shadow: 0 0 30px rgba(255,215,0,0.3);
+}
+
+.card {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+/* FORM */
+.form-box {
+  padding: 30px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.form-box h2 {
+  text-align: center;
+  color: #ffd700;
+  margin-bottom: 20px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,215,0,0.2);
+  background: rgba(0,0,0,0.4);
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #ffd700, #ffb300);
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+.status {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #00ff99;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="banner">
+      🔥 UPCOMING TOURNAMENT LIVE REGISTRATION 🔥
+    </div>
+
+    <div class="card">
+      💰 Prize Pool: ₹5,000 - ₹50,000
+    </div>
+
+    <div class="card">
+      ⏰ Match Time: 7:00 PM IST
+    </div>
+
+    <div class="card">
+      📌 Fair play only - no hacks
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="form-box">
+    <h2>TEAM REGISTRATION</h2>
+
+    <form id="regForm">
+
+      <input type="text" name="teamName" placeholder="Team Name" required />
+      <input type="text" name="uid" placeholder="Free Fire UID" required />
+      <input type="text" name="ign" placeholder="In-Game Name" required />
+      <input type="text" name="whatsapp" placeholder="WhatsApp Number" required />
+
+      <button type="submit">REGISTER NOW</button>
+
+      <div class="status" id="status"></div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+const form = document.getElementById("regForm");
+const statusBox = document.getElementById("status");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  statusBox.style.color = "#ffd700";
+  statusBox.innerText = "Submitting...";
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    const res = await fetch("http://localhost:5678/webhook-test/tournament-register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) throw new Error("Request failed");
+
+    statusBox.style.color = "#00ff99";
+    statusBox.innerText = "Registration Successful ✔";
+
+    form.reset();
+
+  } catch (err) {
+    statusBox.style.color = "red";
+    statusBox.innerText = "Failed to submit. Check webhook.";
+  }
+});
+</script>
+
+</body>
+</html>
